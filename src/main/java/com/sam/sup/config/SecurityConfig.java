@@ -25,7 +25,7 @@ public class SecurityConfig {
     SecretKey secretKey;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         httpSecurity.cors(cors -> cors.configurationSource(configurationSource()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll());
