@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
+@SuppressWarnings("NullableProblems")
 public class ApiResponseFactory {
     public static <T> ResponseEntity<ApiResponse<T>> success(T data, String message) {
         ApiResponse<T> apiResponse = ApiResponse.<T>builder()

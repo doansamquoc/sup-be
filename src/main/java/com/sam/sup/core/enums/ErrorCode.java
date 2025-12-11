@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
     HttpStatus httpStatus;
     String message;
 }
