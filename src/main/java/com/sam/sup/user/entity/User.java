@@ -1,8 +1,10 @@
-package com.sam.sup.user;
+package com.sam.sup.user.entity;
 
 import com.sam.sup.core.entity.BaseEntity;
 import com.sam.sup.core.enums.Role;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jspecify.annotations.NullMarked;
@@ -17,9 +19,11 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "users")
+@Entity(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity implements UserDetails {
     @Column(name = "username", unique = true, nullable = false)
@@ -44,7 +48,7 @@ public class User extends BaseEntity implements UserDetails {
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles.isEmpty()) return Collections.emptySet();
-        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
+        return roles.stream().map(role -> new SimpleGrantedAuthority("SCOP_" + role.name())).toList();
     }
 
     @Override

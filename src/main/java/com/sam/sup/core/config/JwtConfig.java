@@ -1,4 +1,4 @@
-package com.sam.sup.config;
+package com.sam.sup.core.config;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
