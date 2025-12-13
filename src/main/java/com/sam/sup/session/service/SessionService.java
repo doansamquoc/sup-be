@@ -1,6 +1,6 @@
-package com.sam.sup.auth.service;
+package com.sam.sup.session.service;
 
-import com.sam.sup.auth.entity.Session;
+import com.sam.sup.session.entity.Session;
 import com.sam.sup.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 

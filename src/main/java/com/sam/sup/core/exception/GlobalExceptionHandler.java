@@ -1,48 +1,51 @@
 package com.sam.sup.core.exception;
 
-import com.sam.sup.core.dto.ApiResponse;
-import com.sam.sup.core.dto.ApiResponseFactory;
+import com.sam.sup.core.dto.api.ErrorResult;
+import com.sam.sup.core.dto.api.ResultFactory;
 import com.sam.sup.core.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Objects;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<Object>> handleBusiness(
+    public ResponseEntity<@NonNull ErrorResult> handleBusiness(
             BusinessException exception,
             HttpServletRequest servletRequest
     ) {
         ErrorCode errorCode = exception.getErrorCode();
-        return ApiResponseFactory.error(errorCode, servletRequest.getServletPath());
+        return ResultFactory.error(errorCode, servletRequest.getServletPath());
     }
 
-    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidation(
+    public ResponseEntity<@NonNull ErrorResult> handleValidation(
             MethodArgumentNotValidException exception,
             HttpServletRequest servletRequest
     ) {
-        String enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(enumKey);
-        return ApiResponseFactory.error(errorCode, servletRequest.getServletPath());
+        FieldError fieldError = exception.getFieldError();
+        if (fieldError == null || fieldError.getDefaultMessage() == null) {
+            throw new IllegalStateException("Validation error without field message");
+        }
+        ErrorCode errorCode = ErrorCode.valueOf(fieldError.getDefaultMessage());
+        return ResultFactory.error(errorCode, servletRequest.getServletPath());
     }
 
-    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleGeneric(
+    public ResponseEntity<@NonNull ErrorResult> handleGeneric(
             Exception exception,
             HttpServletRequest servletRequest
     ) {
         ErrorCode errorCode = ErrorCode.INTERNAL_ERROR;
         String message = exception.getMessage();
-        return ApiResponseFactory.error(errorCode, servletRequest.getServletPath(), message);
+        if (message == null || message.isBlank()) {
+            message = errorCode.getMessage();
+        }
+        return ResultFactory.error(errorCode, servletRequest.getServletPath(), message);
     }
 }

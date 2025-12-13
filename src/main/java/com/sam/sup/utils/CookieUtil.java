@@ -1,6 +1,6 @@
 package com.sam.sup.utils;
 
-import com.sam.sup.core.constant.Constant;
+import com.sam.sup.core.config.AppConstant;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ public class CookieUtil {
     public static String extractSessionToken(HttpServletRequest servletRequest) {
         if (servletRequest.getCookies() != null)
             for (Cookie cookie : servletRequest.getCookies()) {
-                if (Constant.REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                if (AppConstant.REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
@@ -44,11 +44,11 @@ public class CookieUtil {
     }
 
     public static ResponseCookie createSessionToken(String value) {
-        return create(Constant.REFRESH_TOKEN_COOKIE_NAME, value, TOKEN_EXPIRATION / 1000, "/");
+        return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, TOKEN_EXPIRATION / 1000, "/");
     }
 
     public static ResponseCookie deleteSessionToken() {
-        return delete(Constant.REFRESH_TOKEN_COOKIE_NAME, "/");
+        return delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/");
     }
 
     public static ResponseCookie delete(String name, String path) {

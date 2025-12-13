@@ -1,4 +1,4 @@
-package com.sam.sup.auth.entity;
+package com.sam.sup.session.entity;
 
 import com.sam.sup.core.entity.BaseEntity;
 import com.sam.sup.user.entity.User;

@@ -1,8 +1,8 @@
-package com.sam.sup.auth.service.impl;
+package com.sam.sup.session.service.impl;
 
-import com.sam.sup.auth.entity.Session;
-import com.sam.sup.auth.repository.SessionRepository;
-import com.sam.sup.auth.service.SessionService;
+import com.sam.sup.session.entity.Session;
+import com.sam.sup.session.repository.SessionRepository;
+import com.sam.sup.session.service.SessionService;
 import com.sam.sup.core.enums.ErrorCode;
 import com.sam.sup.core.exception.BusinessException;
 import com.sam.sup.user.entity.User;

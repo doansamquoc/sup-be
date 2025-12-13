@@ -1,6 +1,6 @@
-package com.sam.sup.auth.repository;
+package com.sam.sup.session.repository;
 
-import com.sam.sup.auth.entity.Session;
+import com.sam.sup.session.entity.Session;
 import com.sam.sup.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

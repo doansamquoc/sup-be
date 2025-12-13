@@ -1,22 +1,20 @@
-package com.sam.sup.core.dto;
+package com.sam.sup.core.dto.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Builder
-public class ApiResponse<T> {
+public abstract class BaseResult {
     int status;
-    String error;
     String message;
-    T data;
-    String path;
     LocalDateTime timestamp;
 }
+

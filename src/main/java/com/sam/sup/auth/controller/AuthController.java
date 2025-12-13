@@ -4,13 +4,13 @@ import com.sam.sup.auth.dto.request.CreationRequest;
 import com.sam.sup.auth.dto.request.LoginRequest;
 import com.sam.sup.auth.dto.response.AuthResponse;
 import com.sam.sup.auth.service.AuthService;
-import com.sam.sup.core.dto.ApiResponse;
-import com.sam.sup.core.dto.ApiResponseFactory;
-import com.sam.sup.user.dto.response.UserResponse;
+import com.sam.sup.core.dto.api.ResultFactory;
+import com.sam.sup.core.dto.api.SuccessResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
@@ -26,25 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     AuthService authService;
 
-    @SuppressWarnings("NullableProblems")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(
+    public ResponseEntity<@NonNull SuccessResult<AuthResponse>> login(
             @RequestBody @Valid LoginRequest request,
             HttpServletRequest servletRequest,
             HttpServletResponse servletResponse
     ) {
         AuthResponse authResponse = authService.login(request, servletRequest, servletResponse);
-        return ApiResponseFactory.success(authResponse, "No message available");
+        return ResultFactory.success(authResponse, "No message available");
     }
 
-    @SuppressWarnings("NullableProblems")
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<AuthResponse>> signup(
+    public ResponseEntity<@NonNull SuccessResult<AuthResponse>> signup(
             @RequestBody @Valid CreationRequest request,
             HttpServletRequest servletRequest,
             HttpServletResponse servletResponse
     ) {
         AuthResponse authResponse = authService.signup(request, servletRequest, servletResponse);
-        return ApiResponseFactory.created(authResponse, "No message available");
+        return ResultFactory.created(authResponse, "No message available");
     }
 }
