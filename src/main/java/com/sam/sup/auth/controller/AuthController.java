@@ -42,7 +42,7 @@ public class AuthController {
     String ipAddress = Util.getIpAddress(servletRequest);
     LoginResult result = authService.login(request, ipAddress, userAgent);
 
-    ResponseCookie sessionToken = CookieUtil.createSessionToken(result.getRefreshToken());
+    ResponseCookie sessionToken = CookieUtil.createRefreshToken(result.getRefreshToken());
     CookieUtil.addCookie(servletResponse, sessionToken);
 
     AuthResponse response = new AuthResponse(result.getAccessToken());

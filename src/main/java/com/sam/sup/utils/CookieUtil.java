@@ -43,11 +43,11 @@ public class CookieUtil {
         return build(name, value, maxAge, path);
     }
 
-    public static ResponseCookie createSessionToken(String value) {
+    public static ResponseCookie createRefreshToken(String value) {
         return create(AppConstant.REFRESH_TOKEN_COOKIE_NAME, value, TOKEN_EXPIRATION / 1000, "/");
     }
 
-    public static ResponseCookie deleteSessionToken() {
+    public static ResponseCookie deleteRefreshToken() {
         return delete(AppConstant.REFRESH_TOKEN_COOKIE_NAME, "/");
     }
 
