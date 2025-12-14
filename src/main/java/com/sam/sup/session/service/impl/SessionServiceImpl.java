@@ -8,7 +8,6 @@ import com.sam.sup.core.enums.ErrorCode;
 import com.sam.sup.core.exception.BusinessException;
 import com.sam.sup.user.entity.User;
 import com.sam.sup.utils.Util;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,13 +24,13 @@ public class SessionServiceImpl implements SessionService {
     AppProperties appProperties;
 
     @Override
-    public Session create(User user, HttpServletRequest servletRequest) {
+    public Session create(User user, String ipAddress, String userAgent) {
         Session session = Session.builder()
                 .user(user)
                 .token(Util.randomUUID())
-                .expiresAt(Instant.now().plusMillis(appProperties.getSessionTokenExpiration()))
-                .clientInfo(Util.getUserAgent(servletRequest))
-                .ipAddress(Util.getIpAddress(servletRequest))
+                .expiresAt(Instant.now().plusMillis(appProperties.getRefreshTokenExpiration()))
+                .clientInfo(userAgent)
+                .ipAddress(ipAddress)
                 .revoked(false)
                 .build();
 

@@ -1,6 +1,7 @@
 package com.sam.sup.auth.mapper;
 
 import com.sam.sup.auth.dto.request.CreationRequest;
+import com.sam.sup.auth.dto.response.LoginResult;
 import com.sam.sup.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;

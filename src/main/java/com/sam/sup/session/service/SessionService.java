@@ -5,7 +5,7 @@ import com.sam.sup.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface SessionService {
-    Session create(User user, HttpServletRequest servletRequest);
+    Session create(User user, String ipAddress, String userAgent);
 
     void revoke(Session session);
 

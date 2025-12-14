@@ -16,6 +16,6 @@ import org.springframework.validation.annotation.Validated;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppProperties {
     Long accessTokenExpiration;
-    Long sessionTokenExpiration;
+    Long refreshTokenExpiration;
     String jwtSecretKey;
 }
