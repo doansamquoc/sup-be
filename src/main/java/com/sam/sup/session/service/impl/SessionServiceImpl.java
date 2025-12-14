@@ -1,5 +1,6 @@
 package com.sam.sup.session.service.impl;
 
+import com.sam.sup.core.config.AppProperties;
 import com.sam.sup.session.entity.Session;
 import com.sam.sup.session.repository.SessionRepository;
 import com.sam.sup.session.service.SessionService;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,18 +19,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SessionServiceImpl implements SessionService {
-    final SessionRepository repository;
-    @Value("${app.refresh-token-expiration}")
-    static long TOKEN_EXPIRATION;
+    SessionRepository repository;
+    AppProperties appProperties;
 
     @Override
     public Session create(User user, HttpServletRequest servletRequest) {
         Session session = Session.builder()
                 .user(user)
                 .token(Util.randomUUID())
-                .expiresAt(Instant.now().minusMillis(TOKEN_EXPIRATION))
+                .expiresAt(Instant.now().plusMillis(appProperties.getSessionTokenExpiration()))
                 .clientInfo(Util.getUserAgent(servletRequest))
                 .ipAddress(Util.getIpAddress(servletRequest))
                 .revoked(false)
