@@ -5,7 +5,6 @@ import com.sam.sup.auth.dto.request.LoginRequest;
 import com.sam.sup.auth.dto.response.AuthResponse;
 import com.sam.sup.session.entity.Session;
 import com.sam.sup.auth.mapper.AuthMapper;
-import com.sam.sup.session.repository.SessionRepository;
 import com.sam.sup.auth.service.AuthService;
 import com.sam.sup.session.service.SessionService;
 import com.sam.sup.core.enums.ErrorCode;
@@ -37,7 +36,6 @@ import java.util.Set;
 public class AuthServiceImpl implements AuthService {
     AuthenticationManager authenticationManager;
     PasswordEncoder passwordEncoder;
-    SessionRepository sessionRepository;
     UserService userService;
     SessionService sessionService;
     JwtService jwtService;
