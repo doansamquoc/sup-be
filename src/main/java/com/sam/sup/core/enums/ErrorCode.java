@@ -16,7 +16,8 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid credentials"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid token"),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email already exists"),
-    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username already exists");
+    USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username already exists"),
+    DISPLAY_NAME_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Display name cannot blank");
 
     HttpStatus httpStatus;
     String message;
