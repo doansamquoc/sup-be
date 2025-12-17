@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BeanConfig {
     AppProperties appProperties;
-    PasswordEncoder passwordEncoder;
-    CustomUserDetailsService customUserDetailsService;
 
     @Bean
     SecretKey secretKey() {
@@ -32,12 +30,5 @@ public class BeanConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider dao = new DaoAuthenticationProvider(customUserDetailsService);
-        dao.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(dao);
     }
 }
