@@ -21,6 +21,7 @@ public class ResultFactory {
 
   private static ErrorResult errorBuild(ErrorCode errorCode, String path, String customMessage) {
     return ErrorResult.builder()
+        .error(errorCode.name())
         .status(errorCode.getHttpStatus().value())
         .message(customMessage != null ? customMessage : errorCode.getMessage())
         .timestamp(LocalDateTime.now())
@@ -38,9 +39,10 @@ public class ResultFactory {
     return ResponseEntity.ok(response);
   }
 
-  public static <T> ResponseEntity<@NonNull SuccessResult<T>> success(String cookie, T data, String message) {
-      SuccessResult<T> response = successBuild(HttpStatus.OK.value(), data, message);
-      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie).body(response);
+  public static <T> ResponseEntity<@NonNull SuccessResult<T>> success(
+      String cookie, T data, String message) {
+    SuccessResult<T> response = successBuild(HttpStatus.OK.value(), data, message);
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie).body(response);
   }
 
   public static <T> ResponseEntity<@NonNull SuccessResult<T>> created(T data, String message) {
