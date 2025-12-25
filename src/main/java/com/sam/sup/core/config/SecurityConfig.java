@@ -45,8 +45,10 @@ public class SecurityConfig {
 
     httpSecurity.oauth2ResourceServer(
         oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+    // Session stateless because using JWT for authentication and authorization
     httpSecurity.sessionManagement(
         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
     return httpSecurity.build();
   }
 
