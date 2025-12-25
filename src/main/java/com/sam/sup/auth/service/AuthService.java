@@ -14,4 +14,6 @@ public interface AuthService {
     LoginResult login(LoginRequest request, String ipAddress, String userAgent);
 
     UserResponse signup(CreationRequest request);
+
+    void logout(String refreshToken);
 }

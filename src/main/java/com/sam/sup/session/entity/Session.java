@@ -20,7 +20,7 @@ public class Session extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @Column(name = "hashed_token", unique = true, nullable = false)
+    @Column(name = "token", unique = true, nullable = false)
     String token;
 
     @Column(name = "expires_at", nullable = false)

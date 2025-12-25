@@ -2,6 +2,7 @@ package com.sam.sup.core.dto.api;
 
 import com.sam.sup.core.enums.ErrorCode;
 import org.jspecify.annotations.NonNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,6 +31,16 @@ public class ResultFactory {
   public static <T> ResponseEntity<@NonNull SuccessResult<T>> success(T data, String message) {
     SuccessResult<T> response = successBuild(HttpStatus.OK.value(), data, message);
     return ResponseEntity.ok(response);
+  }
+
+  public static <T> ResponseEntity<@NonNull SuccessResult<T>> success(String message) {
+    SuccessResult<T> response = successBuild(HttpStatus.OK.value(), null, message);
+    return ResponseEntity.ok(response);
+  }
+
+  public static <T> ResponseEntity<@NonNull SuccessResult<T>> success(String cookie, T data, String message) {
+      SuccessResult<T> response = successBuild(HttpStatus.OK.value(), data, message);
+      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie).body(response);
   }
 
   public static <T> ResponseEntity<@NonNull SuccessResult<T>> created(T data, String message) {

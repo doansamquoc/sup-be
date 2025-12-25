@@ -12,7 +12,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -29,43 +28,47 @@ import javax.crypto.SecretKey;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
-    SecretKey secretKey;
-    PasswordEncoder passwordEncoder;
-    CustomUserDetailsService customUserDetailsService;
+  SecretKey secretKey;
+  PasswordEncoder passwordEncoder;
+  CustomUserDetailsService customUserDetailsService;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
-        httpSecurity.cors(cors -> cors.configurationSource(configurationSource()));
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll());
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(jwtDecoder(secretKey)))
-                );
-        return httpSecurity.build();
-    }
+  @Bean
+  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    httpSecurity.cors(cors -> cors.configurationSource(configurationSource()));
+    httpSecurity.csrf(AbstractHttpConfigurer::disable);
+    httpSecurity.authorizeHttpRequests(
+        (auth) -> {
+          auth.requestMatchers("/api/v1/auth/login", "/api/v1/auth/signup").permitAll();
+          auth.anyRequest().authenticated();
+        });
 
-    @Bean
-    CorsConfigurationSource configurationSource() {
-        CorsConfiguration cors = new CorsConfiguration();
-        cors.addAllowedOrigin("http://localhost:5173");
-        cors.addAllowedHeader("*");
-        cors.addAllowedMethod("*");
-        cors.setAllowCredentials(true);
+    httpSecurity.oauth2ResourceServer(
+        oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder(secretKey))));
+    return httpSecurity.build();
+  }
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cors);
-        return source;
-    }
+  @Bean
+  CorsConfigurationSource configurationSource() {
+    CorsConfiguration cors = new CorsConfiguration();
+    cors.addAllowedOrigin("http://localhost:5173");
+    cors.addAllowedHeader("*");
+    cors.addAllowedMethod("*");
+    cors.setAllowCredentials(true);
 
-    @Bean
-    JwtDecoder jwtDecoder(SecretKey secretKey) {
-        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", cors);
+    return source;
+  }
 
-    @Bean
-    AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider dao = new DaoAuthenticationProvider(customUserDetailsService);
-        dao.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(dao);
-    }
+  @Bean
+  JwtDecoder jwtDecoder(SecretKey secretKey) {
+    return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+  }
+
+  @Bean
+  AuthenticationManager authenticationManager() {
+    DaoAuthenticationProvider dao = new DaoAuthenticationProvider(customUserDetailsService);
+    dao.setPasswordEncoder(passwordEncoder);
+    return new ProviderManager(dao);
+  }
 }

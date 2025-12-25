@@ -18,15 +18,19 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -70,14 +74,23 @@ public class AuthServiceImpl implements AuthService {
     return userService.save(user);
   }
 
-  private String encodePassword(String password) {
-    return passwordEncoder.encode(password);
+  @Override
+  public void logout(String refreshToken) {
+    // Consider logged out successfully
+    if (refreshToken == null || refreshToken.isBlank()) return;
+
+    try {
+      sessionService.revokeByToken(refreshToken);
+    } catch (Exception e) {
+      log.warn("Token not found or already revoked: {}", refreshToken);
+    }
   }
 
   private User buildUser(CreationRequest request) {
     User user = mapper.fromCreationRequest(request);
     user.setRoles(Set.of(Role.USER));
-    user.setHashedPassword(encodePassword(request.getPassword()));
+    user.setHashedPassword(passwordEncoder.encode(request.getPassword()));
+    user.setVerified(false);
     return user;
   }
 }
