@@ -38,17 +38,21 @@ public class SecurityConfig {
     httpSecurity.cors(cors -> cors.configurationSource(configurationSource()));
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(
-        (auth) -> {
-          auth.requestMatchers("/api/v1/auth/login", "/api/v1/auth/signup").permitAll();
+        auth -> {
+          auth.requestMatchers(AppConstant.PUBLIC_ENDPOINTS).permitAll();
+          auth.requestMatchers(AppConstant.SWAGGER_ENDPOINTS).permitAll();
           auth.anyRequest().authenticated();
         });
 
-    httpSecurity.oauth2ResourceServer(
-        oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+    httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
     // Session stateless because using JWT for authentication and authorization
     httpSecurity.sessionManagement(
         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+    httpSecurity.exceptionHandling(
+        exception -> {
+          exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+          exception.accessDeniedHandler(new JwtAccessDeniedHandler());
+        });
     return httpSecurity.build();
   }
 
