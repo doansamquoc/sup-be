@@ -32,6 +32,8 @@ public class SecurityConfig {
   SecretKey secretKey;
   PasswordEncoder passwordEncoder;
   CustomUserDetailsService customUserDetailsService;
+  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -44,15 +46,15 @@ public class SecurityConfig {
           auth.anyRequest().authenticated();
         });
 
-    httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+    httpSecurity.oauth2ResourceServer(
+        oauth2 -> {
+          oauth2.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+          oauth2.accessDeniedHandler(jwtAccessDeniedHandler);
+          oauth2.jwt(jwt -> jwt.decoder(jwtDecoder()));
+        });
     // Session stateless because using JWT for authentication and authorization
     httpSecurity.sessionManagement(
         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    httpSecurity.exceptionHandling(
-        exception -> {
-          exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint());
-          exception.accessDeniedHandler(new JwtAccessDeniedHandler());
-        });
     return httpSecurity.build();
   }
 
