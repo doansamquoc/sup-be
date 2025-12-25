@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -53,7 +55,11 @@ public class SecurityConfig {
         oauth2 -> {
           oauth2.authenticationEntryPoint(jwtAuthenticationEntryPoint);
           oauth2.accessDeniedHandler(jwtAccessDeniedHandler);
-          oauth2.jwt(jwt -> jwt.decoder(jwtDecoder()));
+          oauth2.jwt(
+              jwt -> {
+                jwt.decoder(jwtDecoder());
+                jwt.jwtAuthenticationConverter(jwtAuthenticationConverter());
+              });
         });
     // Session stateless because using JWT for authentication and authorization
     httpSecurity.sessionManagement(
@@ -84,5 +90,15 @@ public class SecurityConfig {
     DaoAuthenticationProvider dao = new DaoAuthenticationProvider(customUserDetailsService);
     dao.setPasswordEncoder(passwordEncoder);
     return new ProviderManager(dao);
+  }
+
+  @Bean
+  JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    authoritiesConverter.setAuthoritiesClaimName("role");
+    authoritiesConverter.setAuthorityPrefix("ROLE_");
+    JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+    authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+    return authenticationConverter;
   }
 }
