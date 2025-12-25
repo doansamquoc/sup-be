@@ -1,6 +1,6 @@
 package com.sam.sup.core.service;
 
-import com.sam.sup.core.config.AppConstant;
+import com.sam.sup.core.constant.AppConstant;
 import com.sam.sup.core.config.AppProperties;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

@@ -28,11 +28,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       throws IOException {
 
     ErrorCode code = ErrorCode.UNAUTHORIZED;
-    int status = code.getHttpStatus().value();
 
+    OAuthFilter(request, response, code);
+  }
+
+  static void OAuthFilter(
+      @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, ErrorCode code)
+      throws IOException {
     ErrorResult error = ResultFactory.error(code, request.getServletPath()).getBody();
 
-    response.setStatus(status);
+    response.setStatus(code.getHttpStatus().value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 

@@ -5,7 +5,7 @@ import com.sam.sup.auth.dto.request.LoginRequest;
 import com.sam.sup.auth.dto.response.AuthResponse;
 import com.sam.sup.auth.dto.response.LoginResult;
 import com.sam.sup.auth.service.AuthService;
-import com.sam.sup.core.config.AppConstant;
+import com.sam.sup.core.constant.AppConstant;
 import com.sam.sup.core.dto.api.ResultFactory;
 import com.sam.sup.core.dto.api.SuccessResult;
 import com.sam.sup.user.dto.response.UserResponse;

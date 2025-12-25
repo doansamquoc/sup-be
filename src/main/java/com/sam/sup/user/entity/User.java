@@ -48,7 +48,7 @@ public class User extends BaseEntity implements UserDetails {
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles.isEmpty()) return Collections.emptySet();
-        return roles.stream().map(role -> new SimpleGrantedAuthority("SCOP_" + role.name())).toList();
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
     }
 
     @Override
