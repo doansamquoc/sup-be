@@ -12,6 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -43,7 +44,9 @@ public class SecurityConfig {
         });
 
     httpSecurity.oauth2ResourceServer(
-        oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder(secretKey))));
+        oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+    httpSecurity.sessionManagement(
+        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return httpSecurity.build();
   }
 
@@ -61,7 +64,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  JwtDecoder jwtDecoder(SecretKey secretKey) {
+  JwtDecoder jwtDecoder() {
     return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
   }
 
