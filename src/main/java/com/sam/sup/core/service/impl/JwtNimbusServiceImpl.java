@@ -40,7 +40,7 @@ public class JwtNimbusServiceImpl implements JwtService {
                 .issueTime(issueTime)
                 .expirationTime(expirationTime)
                 .jwtID(Util.randomUUID())
-                .claim("scopes", user.getRoles().stream().map(Enum::name).toList())
+                .claim("role", user.getRoles().stream().map(Enum::name).toList())
                 .claim("name", user.getDisplayName())
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
