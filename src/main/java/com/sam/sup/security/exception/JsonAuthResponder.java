@@ -1,4 +1,4 @@
-package com.sam.sup.core.dto.response;
+package com.sam.sup.security.exception;
 
 import com.sam.sup.core.dto.api.ErrorResult;
 import com.sam.sup.core.dto.api.ResultFactory;
@@ -17,12 +17,14 @@ import java.nio.charset.StandardCharsets;
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ResponseWriter {
+public class JsonAuthResponder implements AuthResponder {
   ObjectMapper mapper;
 
-  public void writeError(HttpServletResponse servletResponse, ErrorCode errorCode, String path)
+  @Override
+  public void sendError(HttpServletResponse servletResponse, ErrorCode errorCode, String path)
       throws IOException {
     ErrorResult error = ResultFactory.error(errorCode, path).getBody();
+
     servletResponse.setStatus(errorCode.getHttpStatus().value());
     servletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
     servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());

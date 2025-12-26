@@ -1,6 +1,5 @@
-package com.sam.sup.core.config;
+package com.sam.sup.security.exception;
 
-import com.sam.sup.core.dto.response.ResponseWriter;
 import com.sam.sup.core.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-  ResponseWriter writer;
+  AuthResponder responder;
 
   @Override
   public void commence(
@@ -27,6 +26,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       @NonNull AuthenticationException authException)
       throws IOException {
     ErrorCode code = ErrorCode.UNAUTHORIZED;
-    writer.writeError(response, code, request.getServletPath());
+    responder.sendError(response, code, request.getServletPath());
   }
 }

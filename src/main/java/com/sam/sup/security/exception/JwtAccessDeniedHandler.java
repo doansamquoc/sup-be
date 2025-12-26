@@ -1,6 +1,5 @@
-package com.sam.sup.core.config;
+package com.sam.sup.security.exception;
 
-import com.sam.sup.core.dto.response.ResponseWriter;
 import com.sam.sup.core.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
-  ResponseWriter writer;
+  AuthResponder responder;
 
   @Override
   public void handle(
@@ -27,6 +26,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
       @NonNull AccessDeniedException accessDeniedException)
       throws IOException {
     ErrorCode code = ErrorCode.ACCESS_DENIED;
-    writer.writeError(response, code, request.getServletPath());
+    responder.sendError(response, code, request.getServletPath());
   }
 }
