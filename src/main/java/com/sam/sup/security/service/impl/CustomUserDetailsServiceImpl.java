@@ -1,6 +1,6 @@
-package com.sam.sup.auth.service.impl;
+package com.sam.sup.security.service.impl;
 
-import com.sam.sup.auth.service.CustomUserDetailsService;
+import com.sam.sup.security.service.CustomUserDetailsService;
 import com.sam.sup.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

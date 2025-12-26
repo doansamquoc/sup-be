@@ -1,4 +1,4 @@
-package com.sam.sup.auth.service;
+package com.sam.sup.security.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
