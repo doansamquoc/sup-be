@@ -29,6 +29,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -71,10 +72,10 @@ public class SecurityConfig {
 
   @Bean
   CorsConfigurationSource configurationSource() {
-    CorsConfiguration cors = new CorsConfiguration();
-    cors.addAllowedOrigin("http://localhost:5173");
-    cors.addAllowedHeader("*");
-    cors.addAllowedMethod("*");
+    CorsConfiguration cors = new CorsConfiguration().applyPermitDefaultValues();
+    cors.setAllowedOriginPatterns(List.of("http://localhost:*"));
+    cors.setAllowedHeaders(List.of("*"));
+    cors.setAllowedHeaders(List.of("GET", "POST", "PUT", "DELETE"));
     cors.setAllowCredentials(true);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
