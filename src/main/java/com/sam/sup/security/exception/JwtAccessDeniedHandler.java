@@ -25,7 +25,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
       @NonNull HttpServletResponse response,
       @NonNull AccessDeniedException accessDeniedException)
       throws IOException {
-    ErrorCode code = ErrorCode.ACCESS_DENIED;
-    responder.sendError(response, code, request.getServletPath());
+    responder.sendError(response, ErrorCode.ACCESS_DENIED, request.getServletPath());
   }
 }

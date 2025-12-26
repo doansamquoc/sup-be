@@ -25,7 +25,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       @NonNull HttpServletResponse response,
       @NonNull AuthenticationException authException)
       throws IOException {
-    ErrorCode code = ErrorCode.UNAUTHORIZED;
-    responder.sendError(response, code, request.getServletPath());
+    responder.sendError(response, ErrorCode.UNAUTHORIZED, request.getServletPath());
   }
 }
