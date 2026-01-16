@@ -4,7 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.sam.sup.auth.dto.OAuthUserDto;
 import com.sam.sup.core.enums.ErrorCode;
-import com.sam.sup.core.enums.LoginProvider;
+import com.sam.sup.core.enums.OAuthProvider;
 import com.sam.sup.core.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public class GoogleLoginStrategy implements OAuthLoginStrategy {
   GoogleIdTokenVerifier googleIdTokenVerifier;
 
   @Override
-  public LoginProvider getProviderName() {
-    return LoginProvider.GOOGLE;
+  public OAuthProvider getProviderName() {
+    return OAuthProvider.GOOGLE;
   }
 
   @Override

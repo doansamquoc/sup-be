@@ -3,14 +3,14 @@ package com.sam.sup.core.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.sam.sup.core.exception.BusinessException;
 
-public enum LoginProvider {
+public enum OAuthProvider {
   GOOGLE,
   FACEBOOK,
   GITHUB;
 
   @JsonCreator
-  public static LoginProvider from(String value) {
-    for (LoginProvider p : values()) {
+  public static OAuthProvider from(String value) {
+    for (OAuthProvider p : values()) {
       if (p.name().equalsIgnoreCase(value)) {
         return p;
       }

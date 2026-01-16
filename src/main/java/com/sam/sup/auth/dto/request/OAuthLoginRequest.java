@@ -1,6 +1,6 @@
 package com.sam.sup.auth.dto.request;
 
-import com.sam.sup.core.enums.LoginProvider;
+import com.sam.sup.core.enums.OAuthProvider;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,5 +16,5 @@ public class OAuthLoginRequest {
     String idToken;
 
     @NotNull(message = "LOGIN_PROVIDER_CANNOT_BLANK")
-    LoginProvider provider;
+    OAuthProvider provider;
 }

@@ -21,7 +21,7 @@ public enum ErrorCode {
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied: You don't have permission"),
   ID_TOKEN_IS_NULL(HttpStatus.BAD_REQUEST, "ID Token is null"),
   UNVERIFIED_EMAIL(HttpStatus.NOT_ACCEPTABLE, "Unverified email"),
-  PROVIDER_NOT_SUPPORTED(HttpStatus.NOT_ACCEPTABLE, "Login provider not supported"),
+  PROVIDER_NOT_SUPPORTED(HttpStatus.NOT_ACCEPTABLE, "OAuth Login Provider Is Not Supported"),
   INVALID_SOCIAL_TOKEN(HttpStatus.BAD_REQUEST, "Invalid social token"),
   LOGIN_PROVIDER_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Login provider cannot blank"),
   TOKEN_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Id token cannot blank"),

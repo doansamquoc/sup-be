@@ -1,7 +1,7 @@
 package com.sam.sup.user.entity;
 
 import com.sam.sup.core.entity.BaseEntity;
-import com.sam.sup.core.enums.LoginProvider;
+import com.sam.sup.core.enums.OAuthProvider;
 import com.sam.sup.core.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class User extends BaseEntity implements UserDetails {
 
   @Column(name = "providers")
   @Enumerated(EnumType.STRING)
-  Set<LoginProvider> providers;
+  Set<OAuthProvider> providers;
 
   @Override
   @NullMarked
