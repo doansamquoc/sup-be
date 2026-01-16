@@ -7,7 +7,6 @@ import com.sam.sup.session.service.SessionService;
 import com.sam.sup.user.entity.User;
 import com.sam.sup.user.service.UserService;
 import com.sam.sup.utils.Util;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

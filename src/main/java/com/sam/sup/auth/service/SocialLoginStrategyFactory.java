@@ -4,7 +4,6 @@ import com.sam.sup.core.enums.ErrorCode;
 import com.sam.sup.core.enums.LoginProvider;
 import com.sam.sup.core.exception.BusinessException;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 

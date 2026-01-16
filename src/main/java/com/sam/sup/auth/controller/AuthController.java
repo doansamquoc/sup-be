@@ -13,7 +13,6 @@ import com.sam.sup.core.dto.api.ResultFactory;
 import com.sam.sup.core.dto.api.SuccessResult;
 import com.sam.sup.user.dto.response.UserResponse;
 import com.sam.sup.core.service.HttpCookieService;
-import com.sam.sup.utils.Util;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
