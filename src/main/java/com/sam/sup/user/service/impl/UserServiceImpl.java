@@ -1,9 +1,9 @@
 package com.sam.sup.user.service.impl;
 
-import com.sam.sup.auth.dto.request.CreationRequest;
+import com.sam.sup.auth.dto.SocialUserDto;
 import com.sam.sup.core.enums.ErrorCode;
+import com.sam.sup.core.enums.Role;
 import com.sam.sup.core.exception.BusinessException;
-import com.sam.sup.user.dto.UserDTO;
 import com.sam.sup.user.dto.response.UserResponse;
 import com.sam.sup.user.entity.User;
 import com.sam.sup.user.mapper.UserMapper;
@@ -12,7 +12,11 @@ import com.sam.sup.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,43 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
   UserRepository repository;
   UserMapper mapper;
+
+  @Override
+  public User processSocialUser(SocialUserDto socialUser) {
+    return repository
+        .findByEmail(socialUser.getEmail())
+        .orElseGet(
+            () -> {
+              User newUser =
+                  User.builder()
+                      .displayName(socialUser.getFullName())
+                      .email(socialUser.getEmail())
+                      .roles(Set.of(Role.USER))
+                      .verified(true)
+                      .build();
+              return repository.save(newUser);
+            });
+  }
+
+  @Override
+  public User processOAuthLogin(OAuth2User oAuth2User) {
+    String email = oAuth2User.getAttribute("email");
+    if (email == null) {
+      throw new OAuth2AuthenticationException("Email Not found from OAuth2 provider");
+    }
+    return repository
+        .findByEmail(email)
+        .map(
+            existing -> {
+              // Update provider or do something
+              return existing;
+            })
+        .orElseGet(
+            () -> {
+              User user = mapper.toUser(oAuth2User);
+              return repository.save(user);
+            });
+  }
 
   @Override
   public UserResponse save(User user) {
@@ -30,6 +71,13 @@ public class UserServiceImpl implements UserService {
   public User findByIdentifier(String identifier) {
     return repository
         .findByIdentifier(identifier)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+  }
+
+  @Override
+  public User findByEmail(String email) {
+    return repository
+        .findByEmail(email)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
 

@@ -1,10 +1,9 @@
 package com.sam.sup.user.entity;
 
 import com.sam.sup.core.entity.BaseEntity;
+import com.sam.sup.core.enums.LoginProvider;
 import com.sam.sup.core.enums.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jspecify.annotations.NullMarked;
@@ -26,33 +25,38 @@ import java.util.Set;
 @Entity(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity implements UserDetails {
-    @Column(name = "username", unique = true, nullable = false)
-    String username;
+  @Column(name = "username", unique = true, nullable = false)
+  String username;
 
-    @Column(name = "hashed_password", nullable = false)
-    String hashedPassword;
+  @Column(name = "hashed_password", nullable = false)
+  String hashedPassword;
 
-    @Column(name = "display_name")
-    String displayName;
+  @Column(name = "display_name")
+  String displayName;
 
-    @Column(name = "email", unique = true)
-    String email;
+  @Column(name = "email", unique = true)
+  String email;
 
-    @Column(name = "roles")
-    Set<Role> roles;
+  @Column(name = "roles")
+  @Enumerated(EnumType.STRING)
+  Set<Role> roles;
 
-    @Column(name = "verified")
-    boolean verified;
+  @Column(name = "verified")
+  boolean verified;
 
-    @Override
-    @NullMarked
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (roles.isEmpty()) return Collections.emptySet();
-        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
-    }
+  @Column(name = "providers")
+  @Enumerated(EnumType.STRING)
+  Set<LoginProvider> providers;
 
-    @Override
-    public @Nullable String getPassword() {
-        return hashedPassword;
-    }
+  @Override
+  @NullMarked
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    if (roles.isEmpty()) return Collections.emptySet();
+    return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
+  }
+
+  @Override
+  public @Nullable String getPassword() {
+    return hashedPassword;
+  }
 }

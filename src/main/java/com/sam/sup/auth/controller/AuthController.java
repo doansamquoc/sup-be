@@ -2,9 +2,12 @@ package com.sam.sup.auth.controller;
 
 import com.sam.sup.auth.dto.request.CreationRequest;
 import com.sam.sup.auth.dto.request.LoginRequest;
+import com.sam.sup.auth.dto.request.SocialLoginRequest;
 import com.sam.sup.auth.dto.response.AuthResponse;
 import com.sam.sup.auth.dto.response.LoginResult;
 import com.sam.sup.auth.service.AuthService;
+import com.sam.sup.core.annotation.ClientIp;
+import com.sam.sup.core.annotation.UserAgent;
 import com.sam.sup.core.constant.AppConstant;
 import com.sam.sup.core.dto.api.ResultFactory;
 import com.sam.sup.core.dto.api.SuccessResult;
@@ -30,18 +33,28 @@ public class AuthController {
   AuthService authService;
   HttpCookieService cookieService;
 
+  private ResponseEntity<SuccessResult<AuthResponse>> handleLoginSuccess(LoginResult result) {
+    ResponseCookie sessionCookie = cookieService.createRefreshToken(result.getRefreshToken());
+    AuthResponse response = new AuthResponse(result.getAccessToken());
+    return ResultFactory.success(sessionCookie.toString(), response, AppConstant.LOGIN_SUCCESS);
+  }
+
+  @PostMapping("/google")
+  public ResponseEntity<@NonNull SuccessResult<AuthResponse>> google(
+      @RequestBody @Valid SocialLoginRequest request,
+      @ClientIp String ip,
+      @UserAgent String agent) {
+
+    LoginResult result = authService.loginSocial(request, ip, agent);
+    return handleLoginSuccess(result);
+  }
+
   @PostMapping("/login")
   public ResponseEntity<@NonNull SuccessResult<AuthResponse>> login(
-      @RequestBody @Valid LoginRequest request, HttpServletRequest servletRequest) {
+      @RequestBody @Valid LoginRequest request, @ClientIp String ip, @UserAgent String agent) {
 
-    String userAgent = Util.getUserAgent(servletRequest);
-    String ipAddress = Util.getIpAddress(servletRequest);
-    LoginResult result = authService.login(request, ipAddress, userAgent);
-
-    ResponseCookie sessionToken = cookieService.createRefreshToken(result.getRefreshToken());
-    AuthResponse response = new AuthResponse(result.getAccessToken());
-
-    return ResultFactory.success(sessionToken.toString(), response, AppConstant.LOGIN_SUCCESS);
+    LoginResult result = authService.login(request, ip, agent);
+    return handleLoginSuccess(result);
   }
 
   @PostMapping("/signup")

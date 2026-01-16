@@ -18,4 +18,6 @@ public class AppProperties {
     Long accessTokenExpiration;
     Long refreshTokenExpiration;
     String jwtSecretKey;
+    String googleClientId;
+    String googleClientSecret;
 }

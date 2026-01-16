@@ -1,8 +1,12 @@
 package com.sam.sup.auth.service.impl;
 
+import com.sam.sup.auth.dto.SocialUserDto;
 import com.sam.sup.auth.dto.request.CreationRequest;
 import com.sam.sup.auth.dto.request.LoginRequest;
+import com.sam.sup.auth.dto.request.SocialLoginRequest;
 import com.sam.sup.auth.dto.response.LoginResult;
+import com.sam.sup.auth.service.SocialLoginStrategy;
+import com.sam.sup.auth.service.SocialLoginStrategyFactory;
 import com.sam.sup.session.entity.Session;
 import com.sam.sup.auth.mapper.AuthMapper;
 import com.sam.sup.auth.service.AuthService;
@@ -19,12 +23,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Transactional
 public class AuthServiceImpl implements AuthService {
   AuthenticationManager authenticationManager;
   PasswordEncoder passwordEncoder;
@@ -42,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
   SessionService sessionService;
   JwtService jwtService;
   AuthMapper mapper;
+  SocialLoginStrategyFactory socialLoginStrategyFactory;
 
   private User authenticate(String identifier, String password) {
     try {
@@ -54,13 +56,26 @@ public class AuthServiceImpl implements AuthService {
     }
   }
 
+  @Override
+  @Transactional
+  public LoginResult loginSocial(SocialLoginRequest request, String ip, String agent) {
+    SocialLoginStrategy strategy = socialLoginStrategyFactory.getStrategy(request.getProvider());
+    SocialUserDto socialUser = strategy.verifyToken(request.getIdToken());
+    User user = userService.processSocialUser(socialUser);
+    return generateLoginResult(user, ip, agent);
+  }
+
+  private LoginResult generateLoginResult(User user, String ip, String agent) {
+    String accessToken = jwtService.generateAccessToken(user);
+    Session session = sessionService.create(user, ip, agent);
+    return LoginResult.builder().accessToken(accessToken).refreshToken(session.getToken()).build();
+  }
+
   @Transactional
   @Override
   public LoginResult login(LoginRequest request, String ipAddress, String userAgent) {
     User user = authenticate(request.getIdentifier(), request.getPassword());
-    String accessToken = jwtService.generateAccessToken(user);
-    Session session = sessionService.create(user, ipAddress, userAgent);
-    return LoginResult.builder().accessToken(accessToken).refreshToken(session.getToken()).build();
+    return generateLoginResult(user, ipAddress, userAgent);
   }
 
   @Override

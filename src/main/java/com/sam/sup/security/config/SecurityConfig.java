@@ -1,5 +1,6 @@
 package com.sam.sup.security.config;
 
+import com.sam.sup.auth.config.OAuth2SuccessHandler;
 import com.sam.sup.security.service.CustomUserDetailsService;
 import com.sam.sup.security.exception.JwtAccessDeniedHandler;
 import com.sam.sup.security.exception.JwtAuthenticationEntryPoint;
@@ -40,6 +41,7 @@ public class SecurityConfig {
   SecretKey secretKey;
   PasswordEncoder passwordEncoder;
   CustomUserDetailsService customUserDetailsService;
+  OAuth2SuccessHandler oAuth2SuccessHandler;
   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -64,9 +66,10 @@ public class SecurityConfig {
                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter());
               });
         });
+    httpSecurity.oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler));
     // Session stateless because using JWT for authentication and authorization
     httpSecurity.sessionManagement(
-        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
     return httpSecurity.build();
   }
 
