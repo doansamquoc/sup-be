@@ -2,7 +2,7 @@ package com.sam.sup.auth.controller;
 
 import com.sam.sup.auth.dto.request.CreationRequest;
 import com.sam.sup.auth.dto.request.LoginRequest;
-import com.sam.sup.auth.dto.request.SocialLoginRequest;
+import com.sam.sup.auth.dto.request.OAuthLoginRequest;
 import com.sam.sup.auth.dto.response.AuthResponse;
 import com.sam.sup.auth.dto.response.LoginResult;
 import com.sam.sup.auth.service.AuthService;
@@ -40,7 +40,7 @@ public class AuthController {
 
   @PostMapping("/google")
   public ResponseEntity<@NonNull SuccessResult<AuthResponse>> google(
-      @RequestBody @Valid SocialLoginRequest request,
+      @RequestBody @Valid OAuthLoginRequest request,
       @ClientIp String ip,
       @UserAgent String agent) {
 

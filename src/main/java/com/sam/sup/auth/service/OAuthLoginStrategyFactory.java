@@ -13,19 +13,19 @@ import java.util.Map;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SocialLoginStrategyFactory {
-  Map<LoginProvider, SocialLoginStrategy> strategies;
+public class OAuthLoginStrategyFactory {
+  Map<LoginProvider, OAuthLoginStrategy> strategies;
 
-  public SocialLoginStrategyFactory(List<SocialLoginStrategy> strategyList) {
-    Map<LoginProvider, SocialLoginStrategy> map = new EnumMap<>(LoginProvider.class);
-    for (SocialLoginStrategy strategy : strategyList) {
+  public OAuthLoginStrategyFactory(List<OAuthLoginStrategy> strategyList) {
+    Map<LoginProvider, OAuthLoginStrategy> map = new EnumMap<>(LoginProvider.class);
+    for (OAuthLoginStrategy strategy : strategyList) {
       map.put(strategy.getProviderName(), strategy);
     }
     this.strategies = map;
   }
 
-  public SocialLoginStrategy getStrategy(LoginProvider provider) {
-    SocialLoginStrategy strategy = strategies.get(provider);
+  public OAuthLoginStrategy getStrategy(LoginProvider provider) {
+    OAuthLoginStrategy strategy = strategies.get(provider);
     if (strategy == null) throw new BusinessException(ErrorCode.PROVIDER_NOT_SUPPORTED);
     return strategy;
   }

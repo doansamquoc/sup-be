@@ -1,12 +1,12 @@
 package com.sam.sup.auth.service.impl;
 
-import com.sam.sup.auth.dto.SocialUserDto;
+import com.sam.sup.auth.dto.OAuthUserDto;
 import com.sam.sup.auth.dto.request.CreationRequest;
 import com.sam.sup.auth.dto.request.LoginRequest;
-import com.sam.sup.auth.dto.request.SocialLoginRequest;
+import com.sam.sup.auth.dto.request.OAuthLoginRequest;
 import com.sam.sup.auth.dto.response.LoginResult;
-import com.sam.sup.auth.service.SocialLoginStrategy;
-import com.sam.sup.auth.service.SocialLoginStrategyFactory;
+import com.sam.sup.auth.service.OAuthLoginStrategy;
+import com.sam.sup.auth.service.OAuthLoginStrategyFactory;
 import com.sam.sup.session.entity.Session;
 import com.sam.sup.auth.mapper.AuthMapper;
 import com.sam.sup.auth.service.AuthService;
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
   SessionService sessionService;
   JwtService jwtService;
   AuthMapper mapper;
-  SocialLoginStrategyFactory socialLoginStrategyFactory;
+  OAuthLoginStrategyFactory socialLoginStrategyFactory;
 
   private User authenticate(String identifier, String password) {
     try {
@@ -58,9 +58,9 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   @Transactional
-  public LoginResult loginSocial(SocialLoginRequest request, String ip, String agent) {
-    SocialLoginStrategy strategy = socialLoginStrategyFactory.getStrategy(request.getProvider());
-    SocialUserDto socialUser = strategy.verifyToken(request.getIdToken());
+  public LoginResult loginSocial(OAuthLoginRequest request, String ip, String agent) {
+    OAuthLoginStrategy strategy = socialLoginStrategyFactory.getStrategy(request.getProvider());
+    OAuthUserDto socialUser = strategy.verifyToken(request.getIdToken());
     User user = userService.processSocialUser(socialUser);
     return generateLoginResult(user, ip, agent);
   }

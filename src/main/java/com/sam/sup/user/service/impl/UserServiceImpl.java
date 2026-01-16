@@ -1,6 +1,6 @@
 package com.sam.sup.user.service.impl;
 
-import com.sam.sup.auth.dto.SocialUserDto;
+import com.sam.sup.auth.dto.OAuthUserDto;
 import com.sam.sup.core.enums.ErrorCode;
 import com.sam.sup.core.enums.Role;
 import com.sam.sup.core.exception.BusinessException;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
   UserMapper mapper;
 
   @Override
-  public User processSocialUser(SocialUserDto socialUser) {
+  public User processSocialUser(OAuthUserDto socialUser) {
     return repository
         .findByEmail(socialUser.getEmail())
         .orElseGet(

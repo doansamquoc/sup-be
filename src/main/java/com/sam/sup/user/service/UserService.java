@@ -1,13 +1,13 @@
 package com.sam.sup.user.service;
 
-import com.sam.sup.auth.dto.SocialUserDto;
+import com.sam.sup.auth.dto.OAuthUserDto;
 import com.sam.sup.user.dto.response.UserResponse;
 import com.sam.sup.user.entity.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public interface UserService {
 
-    User processSocialUser(SocialUserDto socialUser);
+    User processSocialUser(OAuthUserDto socialUser);
 
     User processOAuthLogin(OAuth2User oAuth2User);
 

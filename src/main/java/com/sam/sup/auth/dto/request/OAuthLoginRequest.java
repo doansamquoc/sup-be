@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SocialLoginRequest {
+public class OAuthLoginRequest {
     @NotBlank(message = "TOKEN_CANNOT_BLANK")
     String idToken;
 

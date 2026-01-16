@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SocialUserDto {
+public class OAuthUserDto {
   String email;
   String fullName;
   String avatar;
