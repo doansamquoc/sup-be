@@ -1,7 +1,7 @@
 package com.sam.sup.security.service.impl;
 
 import com.sam.sup.security.service.CustomUserDetailsService;
-import com.sam.sup.user.service.UserService;
+import com.sam.sup.modules.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

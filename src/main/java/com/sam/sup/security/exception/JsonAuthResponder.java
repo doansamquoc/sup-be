@@ -1,8 +1,8 @@
 package com.sam.sup.security.exception;
 
-import com.sam.sup.core.dto.api.ErrorResult;
-import com.sam.sup.core.dto.api.ResultFactory;
-import com.sam.sup.core.enums.ErrorCode;
+import com.sam.sup.common.api.ErrorResult;
+import com.sam.sup.common.api.ResultFactory;
+import com.sam.sup.common.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

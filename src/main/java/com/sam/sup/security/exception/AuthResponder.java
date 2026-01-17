@@ -1,6 +1,6 @@
 package com.sam.sup.security.exception;
 
-import com.sam.sup.core.enums.ErrorCode;
+import com.sam.sup.common.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;

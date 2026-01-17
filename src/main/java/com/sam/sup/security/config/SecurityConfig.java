@@ -3,7 +3,7 @@ package com.sam.sup.security.config;
 import com.sam.sup.security.service.CustomUserDetailsService;
 import com.sam.sup.security.exception.JwtAccessDeniedHandler;
 import com.sam.sup.security.exception.JwtAuthenticationEntryPoint;
-import com.sam.sup.core.constant.AppConstant;
+import com.sam.sup.common.constant.AppConstant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
