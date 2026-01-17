@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   @Transactional
-  public LoginResult loginSocial(OAuthLoginRequest request, String ip, String agent) {
+  public LoginResult oAuthLogin(OAuthLoginRequest request, String ip, String agent) {
     OAuthLoginStrategy strategy = socialLoginStrategyFactory.getStrategy(request.getProvider());
     OAuthUserDto socialUser = strategy.verifyToken(request.getIdToken());
     User user = userService.processSocialUser(socialUser);
@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
     if (userService.existByUsername(request.getUsername()))
       throw new BusinessException(ErrorCode.USERNAME_ALREADY_EXISTS);
 
-    User user = buildUser(request);
+    User user = buildNewUser(request);
     return userService.save(user);
   }
 
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
     }
   }
 
-  private User buildUser(CreationRequest request) {
+  private User buildNewUser(CreationRequest request) {
     User user = mapper.fromCreationRequest(request);
     user.setRoles(Set.of(Role.USER));
     user.setHashedPassword(passwordEncoder.encode(request.getPassword()));

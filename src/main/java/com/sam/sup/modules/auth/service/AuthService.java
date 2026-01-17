@@ -8,7 +8,7 @@ import com.sam.sup.modules.user.dto.response.UserResponse;
 import jakarta.transaction.Transactional;
 
 public interface AuthService {
-    LoginResult loginSocial(OAuthLoginRequest request, String ip, String agent);
+    LoginResult oAuthLogin(OAuthLoginRequest request, String ip, String agent);
 
     @Transactional
     LoginResult login(LoginRequest request, String ipAddress, String userAgent);

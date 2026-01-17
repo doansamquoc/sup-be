@@ -11,21 +11,21 @@ import org.springframework.http.HttpStatus;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
-  INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
-  INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid credentials"),
-  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid token"),
-  EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email already exists"),
-  USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username already exists"),
-  DISPLAY_NAME_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Display name cannot blank"),
-  ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied: You don't have permission"),
-  ID_TOKEN_IS_NULL(HttpStatus.BAD_REQUEST, "ID Token is null"),
-  UNVERIFIED_EMAIL(HttpStatus.NOT_ACCEPTABLE, "Unverified email"),
+  INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User Not Found"),
+  INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid Credentials"),
+  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Token"),
+  EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email Already Exists"),
+  USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username Already Exists"),
+  DISPLAY_NAME_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Display Name Cannot Blank"),
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied: You Don't Have Permission"),
+  ID_TOKEN_IS_NULL(HttpStatus.BAD_REQUEST, "ID Token Is Null"),
+  UNVERIFIED_EMAIL(HttpStatus.NOT_ACCEPTABLE, "Unverified Email"),
   PROVIDER_NOT_SUPPORTED(HttpStatus.NOT_ACCEPTABLE, "OAuth Login Provider Is Not Supported"),
-  INVALID_SOCIAL_TOKEN(HttpStatus.BAD_REQUEST, "Invalid social token"),
-  LOGIN_PROVIDER_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Login provider cannot blank"),
-  TOKEN_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Id token cannot blank"),
-  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request");
+  INVALID_OAUTH_TOKEN(HttpStatus.BAD_REQUEST, "Invalid OAuth Token"),
+  LOGIN_PROVIDER_CANNOT_NULL(HttpStatus.BAD_REQUEST, "Login Provider Cannot Null"),
+  TOKEN_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "ID Token Cannot Blank"),
+  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request");
   HttpStatus httpStatus;
   String message;
 }

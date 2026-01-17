@@ -26,7 +26,7 @@ public class GoogleLoginStrategy implements OAuthLoginStrategy {
   public OAuthUserDto verifyToken(String token) {
     try {
       GoogleIdToken idToken = googleIdTokenVerifier.verify(token);
-      if (idToken == null) throw new BusinessException(ErrorCode.INVALID_SOCIAL_TOKEN);
+      if (idToken == null) throw new BusinessException(ErrorCode.INVALID_OAUTH_TOKEN);
 
       GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -36,7 +36,7 @@ public class GoogleLoginStrategy implements OAuthLoginStrategy {
           .avatar((String) payload.get("picture"))
           .build();
     } catch (Exception e) {
-      throw new BusinessException(ErrorCode.INVALID_SOCIAL_TOKEN);
+      throw new BusinessException(ErrorCode.INVALID_OAUTH_TOKEN);
     }
   }
 }

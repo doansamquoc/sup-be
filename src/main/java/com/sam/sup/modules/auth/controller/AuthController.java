@@ -44,7 +44,7 @@ public class AuthController {
       @ClientIp String ip,
       @UserAgent String agent) {
 
-    LoginResult result = authService.loginSocial(request, ip, agent);
+    LoginResult result = authService.oAuthLogin(request, ip, agent);
     return handleLoginSuccess(result);
   }
 
