@@ -4,6 +4,8 @@ import com.sam.sup.modules.auth.entity.RefreshToken;
 import com.sam.sup.modules.user.entity.User;
 
 public interface RefreshTokenService {
+    void validate(RefreshToken refreshToken);
+
     RefreshToken create(User user, String ipAddress, String userAgent);
 
     void revoke(RefreshToken session);

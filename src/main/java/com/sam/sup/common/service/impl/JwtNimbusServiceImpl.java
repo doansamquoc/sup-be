@@ -22,48 +22,50 @@ import java.util.Date;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtNimbusServiceImpl implements JwtService {
-    final SecretKey secretKey;
-    final AppProperties appProperties;
+  SecretKey secretKey;
+  AppProperties appProperties;
 
-    @Override
-    public String generateAccessToken(User user) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+  @Override
+  public String generateAccessToken(User user) {
+    JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-        Date issueTime = new Date();
-        Date expirationTime = new Date(System.currentTimeMillis() + appProperties.getAccessTokenExpiration());
+    Date issueTime = new Date();
+    Date expirationTime =
+        new Date(System.currentTimeMillis() + appProperties.getAccessTokenExpiration());
 
-        JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                .issuer("sup")
-                .subject(user.getId().toString())
-                .issueTime(issueTime)
-                .expirationTime(expirationTime)
-                .jwtID(Util.randomUUID())
-                .claim("role", user.getRoles().stream().map(Enum::name).toList())
-                .claim("name", user.getDisplayName())
-                .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .build();
+    JWTClaimsSet claims =
+        new JWTClaimsSet.Builder()
+            .issuer("sup")
+            .subject(user.getId().toString())
+            .issueTime(issueTime)
+            .expirationTime(expirationTime)
+            .jwtID(Util.randomUUID())
+            .claim("role", user.getRoles().stream().map(Enum::name).toList())
+            .claim("name", user.getDisplayName())
+            .claim("username", user.getUsername())
+            .claim("email", user.getEmail())
+            .build();
 
-        Payload payload = new Payload(claims.toJSONObject());
-        JWSObject jwsObject = new JWSObject(header, payload);
+    Payload payload = new Payload(claims.toJSONObject());
+    JWSObject jwsObject = new JWSObject(header, payload);
 
-        try {
-            jwsObject.sign(new MACSigner(secretKey));
-        } catch (JOSEException exception) {
-            log.error("Generate access token failed, error: {}", exception.getMessage());
-            throw new RuntimeException(exception.getMessage());
-        }
-
-        return jwsObject.serialize();
+    try {
+      jwsObject.sign(new MACSigner(secretKey));
+    } catch (JOSEException exception) {
+      log.error("Generate access token failed, error: {}", exception.getMessage());
+      throw new RuntimeException(exception.getMessage());
     }
 
-    @Override
-    public boolean validateAccessToken(String token) throws ParseException, JOSEException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        if (expirationTime.before(new Date())) return false;
-        return signedJWT.verify(new MACVerifier(secretKey));
-    }
+    return jwsObject.serialize();
+  }
+
+  @Override
+  public boolean validateAccessToken(String token) throws ParseException, JOSEException {
+    SignedJWT signedJWT = SignedJWT.parse(token);
+    Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+    if (expirationTime.before(new Date())) return false;
+    return signedJWT.verify(new MACVerifier(secretKey));
+  }
 }

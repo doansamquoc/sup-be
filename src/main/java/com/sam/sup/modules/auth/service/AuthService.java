@@ -16,4 +16,7 @@ public interface AuthService {
     UserResponse signup(CreationRequest request);
 
     void logout(String refreshToken);
+
+    // Refresh token rotation
+    LoginResult refresh(String refreshTokenString, String ip, String agent);
 }

@@ -13,7 +13,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "sessions")
+@Entity(name = "refresh_tokens")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RefreshToken extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

@@ -25,7 +25,10 @@ public enum ErrorCode {
   INVALID_OAUTH_TOKEN(HttpStatus.BAD_REQUEST, "Invalid OAuth Token"),
   LOGIN_PROVIDER_CANNOT_NULL(HttpStatus.BAD_REQUEST, "Login Provider Cannot Null"),
   TOKEN_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "ID Token Cannot Blank"),
-  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request");
+  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request"),
+  TOKEN_REVOKED(HttpStatus.UNAUTHORIZED, "Token Has Been Revoked"),
+  TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "Token Has Expired"),
+  REFRESH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "Refresh Token Is Missing");
   HttpStatus httpStatus;
   String message;
 }

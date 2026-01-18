@@ -43,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
   RefreshTokenService sessionService;
   JwtService jwtService;
   AuthMapper mapper;
+  RefreshTokenService refreshTokenService;
   OAuthLoginStrategyFactory socialLoginStrategyFactory;
 
   private User authenticate(String identifier, String password) {
@@ -65,14 +66,8 @@ public class AuthServiceImpl implements AuthService {
     return generateLoginResult(user, ip, agent);
   }
 
-  private LoginResult generateLoginResult(User user, String ip, String agent) {
-    String accessToken = jwtService.generateAccessToken(user);
-    RefreshToken session = sessionService.create(user, ip, agent);
-    return LoginResult.builder().accessToken(accessToken).refreshToken(session.getToken()).build();
-  }
-
-  @Transactional
   @Override
+  @Transactional
   public LoginResult login(LoginRequest request, String ipAddress, String userAgent) {
     User user = authenticate(request.getIdentifier(), request.getPassword());
     return generateLoginResult(user, ipAddress, userAgent);
@@ -99,6 +94,30 @@ public class AuthServiceImpl implements AuthService {
     } catch (Exception e) {
       log.warn("Token not found or already revoked: {}", refreshToken);
     }
+  }
+
+  // Refresh token rotation
+  @Override
+  @Transactional
+  public LoginResult refresh(String refreshTokenString, String ip, String agent) {
+    if (refreshTokenString == null) throw new BusinessException(ErrorCode.REFRESH_TOKEN_MISSING);
+
+    RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenString);
+    refreshTokenService.validate(refreshToken);
+
+    User user = refreshToken.getUser();
+    refreshTokenService.revoke(refreshToken);
+
+    return generateLoginResult(user, ip, agent);
+  }
+
+  private LoginResult generateLoginResult(User user, String ip, String agent) {
+    String accessToken = jwtService.generateAccessToken(user);
+    RefreshToken refreshToken = sessionService.create(user, ip, agent);
+    return LoginResult.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken.getToken())
+        .build();
   }
 
   private User buildNewUser(CreationRequest request) {

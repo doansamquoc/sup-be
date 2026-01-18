@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -38,11 +40,18 @@ public class AuthController {
     return ResultFactory.success(sessionCookie.toString(), response, AppConstant.LOGIN_SUCCESS);
   }
 
-  @PostMapping("/google")
-  public ResponseEntity<@NonNull SuccessResult<AuthResponse>> google(
-      @RequestBody @Valid OAuthLoginRequest request,
+  @PostMapping("/refresh")
+  public ResponseEntity<@NonNull SuccessResult<AuthResponse>> refresh(
+      @CookieValue(name = "refreshToken", required = false) String refreshTokenString,
       @ClientIp String ip,
       @UserAgent String agent) {
+    LoginResult result = authService.refresh(refreshTokenString, ip, agent);
+    return handleLoginSuccess(result);
+  }
+
+  @PostMapping("/google")
+  public ResponseEntity<@NonNull SuccessResult<AuthResponse>> google(
+      @RequestBody @Valid OAuthLoginRequest request, @ClientIp String ip, @UserAgent String agent) {
 
     LoginResult result = authService.oAuthLogin(request, ip, agent);
     return handleLoginSuccess(result);
