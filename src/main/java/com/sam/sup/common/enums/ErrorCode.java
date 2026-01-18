@@ -28,7 +28,8 @@ public enum ErrorCode {
   INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request"),
   TOKEN_REVOKED(HttpStatus.UNAUTHORIZED, "Token Has Been Revoked"),
   TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "Token Has Expired"),
-  REFRESH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "Refresh Token Is Missing");
+  REFRESH_TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "Refresh Token Is Missing"),
+  EMAIL_CANNOT_BLANK(HttpStatus.BAD_REQUEST, "Email Cannot Blank");
   HttpStatus httpStatus;
   String message;
 }

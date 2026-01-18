@@ -3,7 +3,6 @@ package com.sam.sup.common.config;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,9 @@ public class BeanConfig {
 
   @Bean
   SecretKey secretKey() {
-    return Keys.hmacShaKeyFor(appProperties.getJwtSecretKey().getBytes(StandardCharsets.UTF_8));
+    byte[] key = appProperties.getJwtSecretKey().getBytes(StandardCharsets.UTF_8);
+    if (key.length < 32) throw new IllegalArgumentException("JWT secret key must be least 256 bit");
+    return new SecretKeySpec(key, "HmacSHA256");
   }
 
   @Bean

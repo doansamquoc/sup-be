@@ -3,14 +3,17 @@ package com.sam.sup.modules.auth.controller;
 import com.sam.sup.modules.auth.dto.request.CreationRequest;
 import com.sam.sup.modules.auth.dto.request.LoginRequest;
 import com.sam.sup.modules.auth.dto.request.OAuthLoginRequest;
+import com.sam.sup.modules.auth.dto.request.RequestResetPasswordRequest;
 import com.sam.sup.modules.auth.dto.response.AuthResponse;
 import com.sam.sup.modules.auth.dto.response.LoginResult;
+import com.sam.sup.modules.auth.event.PasswordResetEvent;
 import com.sam.sup.modules.auth.service.AuthService;
 import com.sam.sup.common.annotation.ClientIp;
 import com.sam.sup.common.annotation.UserAgent;
 import com.sam.sup.common.constant.AppConstant;
 import com.sam.sup.common.api.ResultFactory;
 import com.sam.sup.common.api.SuccessResult;
+import com.sam.sup.modules.auth.service.PasswordResetService;
 import com.sam.sup.modules.user.dto.response.UserResponse;
 import com.sam.sup.common.service.HttpCookieService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +35,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
   AuthService authService;
   HttpCookieService cookieService;
+  PasswordResetService passwordResetService;
+  ApplicationEventPublisher eventPublisher;
+
+  @PostMapping("/request-reset-password")
+  public ResponseEntity<SuccessResult<String>> requestResetPassword(
+      @RequestBody @Valid RequestResetPasswordRequest request,
+      @ClientIp String ip,
+      @UserAgent String agent) {
+    String token = passwordResetService.createTokenForUser(request);
+
+    PasswordResetEvent event = new PasswordResetEvent(this, request.getEmail(), token, ip, agent);
+    eventPublisher.publishEvent(event);
+    return ResultFactory.success(
+        "We have sent an e-mail to " + request.getEmail() + "please check your mailbox!");
+  }
 
   private ResponseEntity<SuccessResult<AuthResponse>> handleLoginSuccess(LoginResult result) {
     ResponseCookie sessionCookie = cookieService.createRefreshToken(result.getRefreshToken());

@@ -4,6 +4,7 @@ import com.sam.sup.modules.auth.dto.internal.OAuthUserDto;
 import com.sam.sup.common.enums.ErrorCode;
 import com.sam.sup.common.enums.Role;
 import com.sam.sup.common.exception.BusinessException;
+import com.sam.sup.modules.user.dto.request.UserUpdateRequest;
 import com.sam.sup.modules.user.dto.response.UserResponse;
 import com.sam.sup.modules.user.entity.User;
 import com.sam.sup.modules.user.mapper.UserMapper;
@@ -26,15 +27,15 @@ public class UserServiceImpl implements UserService {
   UserMapper mapper;
 
   @Override
-  public User processSocialUser(OAuthUserDto socialUser) {
+  public User processSocialUser(OAuthUserDto oAuthUserDto) {
     return repository
-        .findByEmail(socialUser.getEmail())
+        .findByEmail(oAuthUserDto.getEmail())
         .orElseGet(
             () -> {
               User newUser =
                   User.builder()
-                      .displayName(socialUser.getFullName())
-                      .email(socialUser.getEmail())
+                      .displayName(oAuthUserDto.getFullName())
+                      .email(oAuthUserDto.getEmail())
                       .roles(Set.of(Role.USER))
                       .verified(true)
                       .build();
@@ -63,8 +64,21 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public UserResponse updateById(Long id, UserUpdateRequest request) {
+    User user = findById(id);
+    user = mapper.fromUserUpdateRequest(request, user);
+    return save(user);
+  }
+
+  @Override
   public UserResponse save(User user) {
     return mapper.toUserResponse(repository.save(user));
+  }
+
+  public User findById(Long id) {
+    return repository
+        .findById(id)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
 
   @Override

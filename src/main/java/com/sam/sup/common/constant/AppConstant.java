@@ -1,6 +1,10 @@
 package com.sam.sup.common.constant;
 
 public class AppConstant {
+
+  public static final String PASSWORD_RESET_TEMPLATE = "password-reset-template";
+  public static final String PASSWORD_CHANGED_TEMPLATE = "password-changed-template";
+
   public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
   public static final String LOGIN_SUCCESS = "Login successfully";
   public static final String CREATED_SUCCESS = "Created successfully";
