@@ -20,4 +20,6 @@ public class AppProperties {
     String jwtSecretKey;
     String googleClientId;
     String googleClientSecret;
+
+    String frontendUrl;
 }

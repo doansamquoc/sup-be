@@ -3,7 +3,7 @@ package com.sam.sup.modules.auth.service.impl;
 import com.sam.sup.common.config.AppProperties;
 import com.sam.sup.common.enums.ErrorCode;
 import com.sam.sup.common.exception.BusinessException;
-import com.sam.sup.modules.auth.dto.request.RequestResetPasswordRequest;
+import com.sam.sup.modules.auth.dto.request.ForgotPasswordRequest;
 import com.sam.sup.modules.auth.dto.request.ResetPasswordRequest;
 import com.sam.sup.modules.auth.entity.PasswordResetToken;
 import com.sam.sup.modules.auth.repository.PasswordResetTokenRepository;
@@ -15,12 +15,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PasswordResetServiceImpl implements PasswordResetService {
@@ -30,8 +32,17 @@ public class PasswordResetServiceImpl implements PasswordResetService {
   PasswordEncoder passwordEncoder;
 
   @Override
-  public String createTokenForUser(RequestResetPasswordRequest request) {
+  public String createTokenForUser(ForgotPasswordRequest request) {
     User user = userService.findByEmail(request.getEmail());
+
+    // Check old token
+    // If token is existed, let check expiry date
+    // If token has expired, delete it and create new token
+    PasswordResetToken oldToken = findByUser(user);
+    if (oldToken != null)
+      if (!oldToken.isExpired()) return oldToken.getToken();
+      else repository.delete(oldToken);
+
     String token = UUID.randomUUID().toString();
     PasswordResetToken passwordResetToken =
         PasswordResetToken.builder()
@@ -65,5 +76,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     return repository
         .findByToken(token)
         .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_TOKEN));
+  }
+
+  private PasswordResetToken findByUser(User user) {
+    return repository.findByUser(user).orElse(null);
   }
 }

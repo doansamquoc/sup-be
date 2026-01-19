@@ -1,12 +1,10 @@
 package com.sam.sup.modules.auth.controller;
 
-import com.sam.sup.modules.auth.dto.request.CreationRequest;
-import com.sam.sup.modules.auth.dto.request.LoginRequest;
-import com.sam.sup.modules.auth.dto.request.OAuthLoginRequest;
-import com.sam.sup.modules.auth.dto.request.RequestResetPasswordRequest;
+import com.sam.sup.common.config.AppProperties;
+import com.sam.sup.modules.auth.dto.request.*;
 import com.sam.sup.modules.auth.dto.response.AuthResponse;
 import com.sam.sup.modules.auth.dto.response.LoginResult;
-import com.sam.sup.modules.auth.event.PasswordResetEvent;
+import com.sam.sup.modules.auth.event.ForgotPasswordEvent;
 import com.sam.sup.modules.auth.service.AuthService;
 import com.sam.sup.common.annotation.ClientIp;
 import com.sam.sup.common.annotation.UserAgent;
@@ -17,6 +15,7 @@ import com.sam.sup.modules.auth.service.PasswordResetService;
 import com.sam.sup.modules.user.dto.response.UserResponse;
 import com.sam.sup.common.service.HttpCookieService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -28,6 +27,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -37,18 +38,38 @@ public class AuthController {
   HttpCookieService cookieService;
   PasswordResetService passwordResetService;
   ApplicationEventPublisher eventPublisher;
+  AppProperties appProperties;
 
-  @PostMapping("/request-reset-password")
+  @PostMapping("/forgot-password")
   public ResponseEntity<SuccessResult<String>> requestResetPassword(
-      @RequestBody @Valid RequestResetPasswordRequest request,
+      @RequestBody @Valid ForgotPasswordRequest request,
       @ClientIp String ip,
       @UserAgent String agent) {
     String token = passwordResetService.createTokenForUser(request);
 
-    PasswordResetEvent event = new PasswordResetEvent(this, request.getEmail(), token, ip, agent);
+    ForgotPasswordEvent event = new ForgotPasswordEvent(this, request.getEmail(), token, ip, agent);
     eventPublisher.publishEvent(event);
     return ResultFactory.success(
-        "We have sent an e-mail to " + request.getEmail() + "please check your mailbox!");
+        "We have sent an e-mail to " + request.getEmail() + " please check your mailbox!");
+  }
+
+  @GetMapping("/verify-reset-password-token")
+  public void verifyPasswordResetToken(
+      @RequestParam(name = "token") String token, HttpServletResponse servletResponse)
+      throws IOException {
+    if (passwordResetService.validatePasswordResetToken(token))
+      servletResponse.sendRedirect(
+          appProperties.getFrontendUrl() + "/password-reset?token=" + token);
+    else
+      servletResponse.sendRedirect(
+          appProperties.getFrontendUrl() + "/password-reset/invalid-token");
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<SuccessResult<String>> resetPassword(
+      @RequestBody @Valid ResetPasswordRequest request) {
+    passwordResetService.resetPassword(request);
+    return ResultFactory.success("Your password has been changed");
   }
 
   private ResponseEntity<SuccessResult<AuthResponse>> handleLoginSuccess(LoginResult result) {

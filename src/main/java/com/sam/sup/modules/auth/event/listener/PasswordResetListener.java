@@ -1,6 +1,6 @@
 package com.sam.sup.modules.auth.event.listener;
 
-import com.sam.sup.modules.auth.event.PasswordResetEvent;
+import com.sam.sup.modules.auth.event.ForgotPasswordEvent;
 import com.sam.sup.modules.mail.dto.request.SendMailRequest;
 import com.sam.sup.modules.mail.service.MailService;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ public class PasswordResetListener {
 
   @Async
   @EventListener
-  public void handlePasswordResetListener(PasswordResetEvent event) {
+  public void handlePasswordResetListener(ForgotPasswordEvent event) {
     SendMailRequest request =
         SendMailRequest.builder()
             .to(event.getEmail())
